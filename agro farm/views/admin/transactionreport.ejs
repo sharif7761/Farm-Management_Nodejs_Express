@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Farm</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="style.css">
+
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+
+
+
+<style type="text/css">
+	.scroll
+	{
+		
+		width:100%;
+		height:300px; 
+		overflow: scroll;
+	}
+
+.table	img{
+		width: 45px; 
+                height: 45px; 
+                object-fit: contain;
+	}
+
+
+
+	
+		/* popup style */
+.bg-modal{
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.7);
+	
+	position: absolute;
+	top: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	display: none;
+}
+
+.modal-content{
+	width: 500px;
+	height: 450px;
+	background-color: white;
+	border-radius: 4px;
+	text-align: center;
+	padding: 20px;
+	position: relative;
+}
+#popup1 input {
+width: 50%;
+display: block;
+
+margin: 15px auto;
+}
+
+
+.close{
+	position: absolute;
+	top :0;
+	right: 14px;
+	font-size: 42px;
+	transform: rotate(45deg);
+	cursor: pointer;
+}
+
+
+		/* edit popup style */
+.bg-modal2{
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0,0.7);
+	
+	position: absolute;
+	top: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	display: none;
+}
+
+.modal-content2{
+	width: 500px;
+	height: 470px;
+	background-color: white;
+	border-radius: 4px;
+	text-align: center;
+	padding: 20px;
+	position: relative;
+}
+#popup input {
+width: 50%;
+display: block;
+
+margin: 15px auto;
+}
+
+.close2{
+	position: absolute;
+	top: 0;
+	right: 14px;
+	font-size: 42px;
+	transform: rotate(45deg);
+	cursor: pointer;
+}
+
+
+
+
+</style>
+</head>
+<body>
+
+	<header>
+	<%- include('owner_header'); -%>
+</header>
+	</div>
+
+
+		<div class="col-md-12" id="cart">
+			<div class="box">
+				<form action="" method="post" enctype="multipart-form-data">
+					<legend><h1>Transaction Report</h1></legend>
+					<div>
+					
+					<span class="pull-right">
+						<button class="btn btn-default" formaction="/admin/transactionreport" style="background-color: blue;color: white;" onclick="exportTableToCSV('members.csv')">ExportData</button>
+							<input type="text" name="search" placeholder="Search by Transaction Name">
+							<button class="btn btn-default" type="submit" formaction="/admin/searchTransaction" name="submit" value="submit" style="background-color: blue;color: white;">
+								<i class="fa fa-search"> Search</i>
+							</button>
+
+
+					</span>	
+
+				</div>
+
+				<br>
+				<br>
+				<br>
+
+
+	<div class="table-responsive">
+						<div class="scroll">
+
+	<table  class='table table-bordered table-hover'>
+		<tr style='background-color: #9099f3;'>
+			<td>TRANSACTION ID</td>
+			<td>TRANSACTION NAME</td>
+			<td>TYPE</td>
+			<td>PRICE</td>
+			<td>DESCRIPTION</td>
+			<td>DATE</td>
+			<td>ACTION</td>
+		</tr>
+		<% var totalD=0 %>
+		<% var totalC=0 %>
+	<% for(var i=0; i < transactionlist.length; i++){ 
+		if(transactionlist[i].TRType=='debit'){
+			totalD=totalD+transactionlist[i].Price}
+		else{
+			totalC=totalC+transactionlist[i].Price}%>
+		<tr>
+			<td><%= transactionlist[i].TRid %></td>
+			<td><%= transactionlist[i].TRname %></td>
+			<td><%= transactionlist[i].TRType %></td>
+			<td><%= transactionlist[i].Price %></td>
+			<td><%= transactionlist[i].Description %></td>
+			<td><%= transactionlist[i].Date %></td>
+
+			<td>
+				<button class="btn btn-default edition" type="button" style="background-color: green;color: white;">
+								<i class="fa fa-pencil-square-o"> Modify</i>
+							</button> 
+
+			</td>
+		</tr>
+	<%  } %>
+	</table>
+	
+	
+</div>
+</div>
+
+
+<div class="box-footer">
+
+						<div>
+							<h3 style="color: red;">Total Debit: <span style="color: black;"> <%=totalD%> tk.</span> </h3>
+							<h3 style="color: green;">Total Credit: <span style="color: black;"> <%=totalC%> tk.</span> </h3>
+						</div>
+						
+						<div class="pull-right">
+							
+							
+							<a href="#" class="btn btn-primary" id="add_item" style="background-color: red;">Add Transaction <i class="fa fa-plus"></i></a>	
+							
+						</div>
+
+						
+					</div><br><br>
+
+
+<footer>
+		<%- include('footer'); -%>
+	</footer>
+
+
+
+
+<div class="bg-modal2" >
+			<div class="modal-content2">
+				
+				<div class="close2">
+					+
+				</div>
+
+
+				<form  id="popup" method="POST" >
+					
+					<input type="text" style="width: 50%;" name="Trid" id="Trid" placeholder="Trid" readonly ><br><br>
+					<input type="text" style="width: 50%;" name="Trname" id="Trname" placeholder="Trname"><br><br>
+					<select name="Type" style="width: 50%;" id="Type" style="width: 50%;">
+ 					<option disabled hidden >Select Type</option>
+  					<option value="debit">Debit</option>
+  					<option value="credit">Credit</option>
+					</select><br><br>
+					<input type="text" style="width: 50%;" name="Price" id="Price" placeholder="Price"><br><br>
+					<input type="text" style="width: 50%;" name="Description" id="Description" placeholder="Description"><br><br>
+					
+		<button class="btn btn-default fa fa-pencil-square-o"   type="submit" name="update_transaction"  style="background-color: green; color: white;" formaction="/admin/update_transaction">Update Transaction</button>
+		<button class="btn btn-default fa fa-trash" formaction="/admin/delete_transaction" type="submit" name="delete_transaction" class="fa fa-trash" style="background-color: red;color: white;">Delete Transaction</button><br><br>
+				</form>
+				
+
+			</div>
+		</div>
+
+
+
+
+
+					<div class="bg-modal">
+			<div class="modal-content">
+				<div class="close">
+					+
+				</div>
+
+
+				<form  id="popup1" method="POST" >
+					
+					
+					<input type="text" style="width: 50%;" name="Trname" placeholder="Transaction Name">
+					<select name="Type" style="width: 50%;">
+ 					<option selected disabled hidden >Select Type</option>
+  					<option value="debit">Debit</option>
+  					<option value="credit">Credit</option>
+					</select>
+					<input type="text" style="width: 50%;" name="Price" placeholder="Price">
+					<input type="text" style="width: 50%;" name="Description" placeholder="Description">
+					
+					<button class="btn btn-default fa fa-plus" formaction="/admin/addtransaction" type="submit" name="add_transaction" style="background-color:slateblue; color: white;">Add Transaction</button>
+				</form>
+
+			</div>
+		</div>
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<script type="text/javascript">
+
+	document.getElementById('add_item').addEventListener('click',function(){
+document.querySelector('.bg-modal').style.display='flex';
+
+});
+
+
+$(document).ready(function(){
+	$('.edition').on('click',function(){
+		
+	
+document.querySelector('.bg-modal2').style.display='flex';
+
+$tr=$(this).closest('tr');
+var data = $tr.children("td").map(function(){
+return $(this).text();
+}).get();
+
+console.log(data);
+$('#Trid').val(data[0]);
+$('#Trname').val(data[1]);
+$('#Type').val(data[2]);
+$('#Price').val(data[3]);
+$('#Description').val(data[4]);
+
+
+		});
+	
+	});
+
+
+
+	 
+	document.querySelector('.close').addEventListener('click',function(){
+		document.querySelector('.bg-modal').style.display='none';
+
+	});
+
+	document.querySelector('.close2').addEventListener('click',function(){
+		document.querySelector('.bg-modal2').style.display='none';
+		
+	});
+</script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+<script type="text/javascript">
+	function downloadCSV(csv, filename) {
+    var csvFile;
+    var downloadLink;
+
+    // CSV file
+    csvFile = new Blob([csv], {type: "text/csv"});
+
+    // Download link
+    downloadLink = document.createElement("a");
+
+    // File name
+    downloadLink.download = filename;
+
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    // Hide download link
+    downloadLink.style.display = "none";
+
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+
+    // Click download link
+    downloadLink.click();
+}
+
+function exportTableToCSV(filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("table tr");
+    
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+        
+        for (var j = 0; j <= 5; j++) 
+            row.push(cols[j].innerText);
+        
+        csv.push(row.join(","));        
+    }
+
+    // Download CSV file
+    downloadCSV(csv.join("\n"), filename);
+}
+</script>
